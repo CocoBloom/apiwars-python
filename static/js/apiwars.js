@@ -17,7 +17,6 @@ window.onload = function() {
 
 
 function get_table(planets) {
-    console.log("get_tavle()",planets)
     let column_names = ['name', 'diameter', 'climate', 'terrain', 'surface_water', 'population','residents']
     let table = document.createElement('table');
     table.style.border = "1px solid black";
@@ -36,6 +35,7 @@ function get_headers(column_names,table) {
     for ( let index = 0; index < column_names.length; index++) {
         let cell_header = document.createElement('th');
         cell_header.style.border = "1px solid black";
+        cell_header.style.textAlign = 'center';
         cell_header.innerHTML = (column_names[index].charAt(0).toUpperCase() + column_names[index].slice(1)).replace('_',' ');
         row_header.appendChild(cell_header);
     }
@@ -59,13 +59,18 @@ function get_td_in_table(planets,column_names,table) {
                     } else if (key === 'population') {
                         cell.innerHTML = parseInt(planets[i][key]).toLocaleString() + ' people';
                     } else if (key === 'residents') {
-                        let residents_button = document.createElement('button');
-                        residents_button.setAttribute('type','button')
-                        residents_button.innerHTML = planets[i]['residents'].length + ' resident(s)';
-                        residents_button.setAttribute('data-toggle','modal');
-                        residents_button.setAttribute('data-target','#residentsModal' + i.toString());
-                        cell.appendChild(residents_button);
-                        get_modal_class(i);
+                        if (planets[i]['residents'].length === 0) {
+                            cell.innerHTML = 'No known residents';
+
+                        } else {
+                            let residents_button = document.createElement('button');
+                            residents_button.setAttribute('type','button');
+                            residents_button.innerHTML = planets[i]['residents'].length + ' resident(s)';
+                            residents_button.setAttribute('data-toggle','modal');
+                            residents_button.setAttribute('data-target','#residentsModal' + i.toString());
+                            cell.appendChild(residents_button);
+                            get_modal_class(i,planets);
+                        }
                     } else {
                         cell.innerHTML = planets[i][key];
                     }
@@ -167,8 +172,7 @@ function get_planets_once () {
    document.getElementById("residentsModal")[0].showModal();
 }
 
-function get_modal_class(index) {
-    let table = document.getElementsByTagName('table')[0];
+function get_modal_class(index,planets) {
     let modal_main = document.createElement('div');
     modal_main.setAttribute('class','modal fade');
     modal_main.setAttribute('id','residentsModal'+ index);
@@ -184,14 +188,16 @@ function get_modal_class(index) {
     let modal_header = document.createElement('div');
     modal_header.setAttribute('class','modal-header');
     modal_content.appendChild(modal_header);
-    let h_1 = document.createElement('h1');
-    h_1.innerText = 'Residents';
-    modal_header.appendChild(h_1);
+    let title = document.createElement('h1');
+    title.innerText = 'Residents of ' + planets[index]['name'];
+    modal_header.appendChild(title);
+    let x_button = get_x_modal_button();
+    title.appendChild(x_button);
     let modal_body = document.createElement('div');
     modal_body.setAttribute('class','modal-body');
     modal_content.appendChild(modal_body);
-    let modal_table = document.createElement('table');
-    modal_body.appendChild(modal_table);
+    let planet_name = planets[index]['name'];
+    get_residents(planet_name,planets,index,modal_body);
     let modal_footer = document.createElement('div');
     modal_footer.setAttribute('class','modal-footer');
     modal_content.appendChild(modal_footer);
@@ -200,9 +206,20 @@ function get_modal_class(index) {
     close_modal.setAttribute('data-dismiss','modal');
     close_modal.innerText = 'Close';
     modal_footer.appendChild(close_modal);
-
 }
 
+
+function get_x_modal_button() {
+    let x_modal_button = document.createElement('span');
+    x_modal_button.setAttribute('id','x-button');
+    x_modal_button.setAttribute('style', 'float : right');
+    x_modal_button.innerText = 'x';
+    x_modal_button.setAttribute('type','button');
+    x_modal_button.setAttribute('data-dismiss','modal');
+    return x_modal_button
+
+
+}
 function deleteModals() {
     console.log("start delete modals")
     let modals = document.getElementsByTagName('div');
@@ -223,4 +240,66 @@ function deleteModals() {
         } console.log('index',index)
             deleting_modals[index].remove();
     }
+}
+
+
+function get_residents(planet_name,planets,index,modal_body) {
+    let modal_table = document.createElement('table');
+    modal_table.setAttribute('id', 'table'+index);
+    modal_body.appendChild(modal_table);
+    let column_names = ['name','height','mass','skin_color','hair_color','eye_color','birth_year','gender'];
+    let current_table = document.getElementById('table'+index);
+    get_headers(column_names,current_table);
+    get_tds_in_modalTable(planets,planet_name,current_table,column_names);
+    return modal_table
+}
+
+
+function get_tds_in_modalTable(planets,planet_name,modal_table,column_names) {
+    for (i=0; i < planets.length; i++) {
+        if (planets[i]['name'] === planet_name) {
+           for (j=0; j < planets[i]['residents'].length; j++) {
+               let row = document.createElement('tr');
+               let resident = planets[i]['residents'][j];
+               get_data_residents(resident,column_names,row);
+               row.style.border = "1px solid black";
+               row.style.textAlign = 'center';
+               modal_table.appendChild(row);
+           }
+        }
+    }
+}
+
+function get_data_residents(resident,column_names,row) {
+    fetch(resident)  // set the path; the method is GET by default, but can be modified with a second parameter
+        .then((response) => response.json())  // parse JSON format into JS object
+        .then((data) => {
+            for ( i=0; i < column_names.length; i++) {
+                let td = document.createElement('td');
+                if (column_names[i] === 'height') {
+                    td.innerHTML = (parseInt(data[column_names[i]])/100).toString() + ' m';
+                } else if (column_names[i] === 'mass') {
+                    td.innerHTML = data[column_names[i]] + ' kg';
+                } else if (column_names[i] === 'gender') {
+                    if (data[column_names[i]] === 'female') {
+                        let img_female = document.createElement('img');
+                        img_female.setAttribute('src','static/css/female.jpeg');
+                        img_female.style.width = '20%'
+                        td.appendChild(img_female);
+                    } else if (data[column_names[i]] === 'male') {
+                        let img_male = document.createElement('img');
+                        img_male.setAttribute('src','static/css/male.png');
+                        img_male.style.width = '20%'
+                        td.appendChild(img_male);
+                    } else {
+                        td.innerHTML = data[column_names[i]];
+                    }
+                } else {
+                    td.innerHTML = data[column_names[i]];
+                }
+                td.style.border = "1px solid black";
+                td.style.textAlign = 'center';
+                row.appendChild(td)
+            }
+        })
 }
