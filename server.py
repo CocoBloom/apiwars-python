@@ -1,16 +1,16 @@
-from flask import Flask, render_template, redirect, request
+from flask import Flask, request, render_template, redirect, session, url_for, escape, flash
 
 app = Flask(__name__)
-saved_data = {}
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 
 @app.route('/')
 def main_page():
-    return render_template('index.html')
+    return render_template('index.html');
 
 
 if __name__ == "__main__":
     app.run(
-        debug=True,  # Allow verbose error reports
-        port=5000  # Set custom port
+        debug=True,
+        port=5000
     )
