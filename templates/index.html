@@ -2,18 +2,23 @@
 <html lang="en">
 <head>
   <title>Bootstrap Example</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <link rel="stylesheet icon" type="text/css" href="{{ url_for('static', filename='css/apiwars.css') }}">
+  <script type="text/javascript" src="{{ url_for('static', filename='js/apiwars.js') }}" defer></script>
+
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<!--  <script type="text/javascript" src="/static/js/apiwars.js"></script>-->
 </head>
 <body>
-
-<script type="text/javascript" src="/static/js/apiwars.js"></script>
-<h1>Star Wars universe planets</h1>
-
-
+  <div class="container">
+    <h1>Star Wars universe planets</h1>
+    <button id="prev-button">Previous</button>
+    <button id="next-button">Next</button>
+    <br/><br/>
+    <table class="planets"></table>
+  </div>
 </body>
 </html>
 
