@@ -1,4 +1,3 @@
-
 window.onload = function() {
     init();
 }
@@ -13,13 +12,17 @@ function getAllData(url) {
         .then((data) => {
             let results = data.results;
             get_table(results);
-            let next_button = document.getElementById('next-button');
-            let prev_button = document.getElementById('prev-button');
-            prev_button.setAttribute('data-url', data.previous);
-            next_button.setAttribute('data-url', data.next);
-            prev_button.addEventListener('click', get_more_planets);
-            next_button.addEventListener('click', get_more_planets);
+            addEventListeners(data.previous, data.next);
         })
+}
+
+function addEventListeners(prevURL, nextURL) {
+    let next_button = document.getElementById('next-button');
+    let prev_button = document.getElementById('prev-button');
+    prev_button.setAttribute('data-url', prevURL);
+    next_button.setAttribute('data-url', nextURL);
+    prev_button.addEventListener('click', get_more_planets);
+    next_button.addEventListener('click', get_more_planets);
 }
 
 function get_table(planets) {
@@ -133,8 +136,12 @@ function fetchByResident(resident, index, column_names) {
                 }
                 innerHTML += `</td>`;
             }
+
             let table = document.getElementById(`table${index}`);
-            table.innerHTML = table.innerHTML + innerHTML;
+            if (table !== null) {
+                 table.innerHTML = table.innerHTML + innerHTML;
+            }
+
         })
 }
 
@@ -153,6 +160,7 @@ function get_more_planets(e) {
         getAllData(url);
     } else {
         if (id === 'prev-button') {
+            console.log(id)
             let prev_button = document.getElementById('prev-button');
             prev_button.removeEventListener('click', get_more_planets);
         } else {
