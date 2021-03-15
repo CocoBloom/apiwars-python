@@ -18,6 +18,10 @@ button {
     background-color: aquamarine;
 }
 
+.link {
+    border-radius: 5px;
+}
+
 .planets {
     border: 1px solid black;
     width: 100%;
