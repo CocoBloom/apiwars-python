@@ -3,7 +3,10 @@ window.onload = function() {
 }
 
 function init() {
-   getAllData('http://swapi.dev/api/planets/');
+    let table = document.getElementsByClassName('planets')[0];
+    if (table != null ) {
+        getAllData('http://swapi.dev/api/planets/');
+    }
 }
 
 function getAllData(url) {
