@@ -5,20 +5,29 @@
   <meta charset="UTF-8">
   <link rel="stylesheet icon" type="text/css" href="{{ url_for('static', filename='css/apiwars.css') }}">
   <script type="text/javascript" src="{{ url_for('static', filename='js/apiwars.js') }}" defer></script>
-
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <!--  <script type="text/javascript" src="/static/js/apiwars.js"></script>-->
 </head>
 <body>
-  <div class="container">
-    <h1>Star Wars universe planets</h1>
-    <button id="prev-button">Previous</button>
-    <button id="next-button">Next</button>
-    <br/><br/>
-    <table class="planets"></table>
-  </div>
+  {% if 'email' in session %}
+      <button class="link"><a href="/logout">Log out</a></button>
+      <div class="container">
+        <h1>Star Wars universe planets</h1>
+        <button id="prev-button">Previous</button>
+        <button id="next-button">Next</button>
+        <br/><br/>
+        <table class="planets"></table>
+      </div>
+  {% else %}
+      <button class="link"><a href="/login">Sign in</a></button>
+      <div class="container">
+          <h1>Star Wars universe planets</h1>
+          <h3>You have to log in!!</h3>
+      </div>
+  {% endif %}
+
 </body>
 </html>
 
