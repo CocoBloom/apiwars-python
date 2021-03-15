@@ -160,7 +160,6 @@ function get_more_planets(e) {
         getAllData(url);
     } else {
         if (id === 'prev-button') {
-            console.log(id)
             let prev_button = document.getElementById('prev-button');
             prev_button.removeEventListener('click', get_more_planets);
         } else {
@@ -168,12 +167,4 @@ function get_more_planets(e) {
             next_button.removeEventListener('click', get_more_planets);
         }
     }
-}
-
-function get_planets_names(data) {
-    let names = [];
-    for (i=0; i< data.results.length; i++) {
-        names.push(data.results[i]['name'])
-    }
-    return names
 }
